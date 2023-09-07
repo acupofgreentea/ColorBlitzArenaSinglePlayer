@@ -9,19 +9,40 @@ public class PlayerMovement : CharacterMovement
 
     public Vector3 MovementInput {get; set;}
 
-    [SerializeField] private Joystick _joystick;
+    private PlayerInput inputActions;
+
+    private void Awake() 
+    {
+        inputActions = new PlayerInput();
+    }
+
+    private void Start() 
+    {
+        EnableMovement();    
+    }
+
+    public void EnableMovement()
+    {
+        inputActions.Enable();
+    }
+
+    public void DisableMovement()
+    {
+        inputActions.Disable();
+    }
+
+    
     private void Update() 
     {
         Move();
     }
-
     private void Move()
     {
-        var Direction = _joystick.Direction.normalized;
+        var Direction = inputActions.PlayerActions.Movement.ReadValue<Vector3>().normalized;
 
-        OnMovementUpdate?.Invoke(Direction);
+        OnMovementUpdate?.Invoke(Direction.ToVector2());
 
-        MovementInput = Direction.ToVector3();
+        MovementInput = Direction;
 
         agent.Move(MovementInput * moveSpeed * Time.deltaTime);
 
