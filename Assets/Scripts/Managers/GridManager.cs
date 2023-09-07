@@ -12,6 +12,21 @@ public class GridManager : MonoBehaviour
     [SerializeField] private float cellSize = 1.0f; 
 
     [SerializeField] private List<GridCell> gridCells = new();
+
+    [SerializeField] private ColorConfig defaultGridConfig;
+
+    private void Start() 
+    {
+        SetAllGridsColorDataToDefault();    
+    }
+
+    private void SetAllGridsColorDataToDefault()
+    {
+        foreach (GridCell grid in gridCells)
+        {
+            grid.SetColorData(defaultGridConfig.GetColorData);
+        }
+    }
     
     private int GetPercentageOfColor(ColorType type)
     {

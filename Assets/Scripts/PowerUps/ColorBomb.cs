@@ -10,9 +10,13 @@ public class ColorBomb : MonoBehaviour, IPowerUp
 
     private void Awake()
     {
-        this.DelayOneFrame(()=> SetGridsInRange());
-
         startPosY = transform.position.y;
+    }
+
+    private IEnumerator Start() 
+    {
+        yield return null;  
+        SetGridsInRange();  
     }
 
     private float startPosY;
@@ -35,7 +39,7 @@ public class ColorBomb : MonoBehaviour, IPowerUp
         {
             foreach (var item in gridsInRange)
             {
-                item.ChangeColor(colorConfig, transform);
+                item.ChangeColor(interactedPlayerColorData, transform);
                 yield return new WaitForSeconds(0.01f);
             }
             
@@ -43,13 +47,13 @@ public class ColorBomb : MonoBehaviour, IPowerUp
         }
     }
 
-    private PlayerColorConfig colorConfig;
+    private ColorData interactedPlayerColorData;
     private void OnTriggerEnter(Collider other) 
     {
-        if(!other.TryGetComponent(out PlayerColor player))
+        if(!other.TryGetComponent(out CharacterColor player))
             return;
 
-        colorConfig = player.ColorConfig;
+        interactedPlayerColorData = player.ColorData;
         Activate();
     }
 

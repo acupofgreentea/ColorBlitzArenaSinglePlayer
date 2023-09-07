@@ -1,42 +1,44 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class GridCell : MonoBehaviour
+public class GridCell : MonoBehaviour, IHaveColor
 {
-    public ColorType ColorType {get; set;}
-    
+    public ColorData ColorData {get; private set;}
+
     private Renderer _renderer;
 
-    [SerializeField] private PlayerColorConfig colorConfig;
+    public ColorType ColorType => ColorData.ColorType;
 
-    private void Awake() 
+    private void Start() 
     {
         _renderer = GetComponent<Renderer>();
-        ColorType = colorConfig.ColorType;         
-        _renderer.material.color = colorConfig.Color;
+        this.DelayOneFrame(()=> _renderer.material.color = ColorData.Color);
+    }
+    
+    public void SetColorData(ColorData colorData)
+    {
+        ColorData = new(colorData.Color, colorData.ColorType);
     }
 
-    public void ChangeColor(PlayerColorConfig ColorConfig, Transform other)
+    public void ChangeColor(ColorData colorData, Transform other)
     {
-        if(colorConfig == ColorConfig)
+        if(this.ColorData == colorData)
             return;
 
-        colorConfig = ColorConfig;
-
-        ColorType = colorConfig.ColorType;
+        SetColorData(colorData);
 
         var direction = transform.position - other.transform.position;
         direction.y = 0f;
-        _renderer.material.DOColor(colorConfig.Color, 0.2f);
+        _renderer.material.DOColor(ColorData.Color, 0.2f);
         transform.DOComplete();
         transform.DOShakePosition(0.2f, direction.normalized * 0.4f, 10);
     }
 
     private void OnTriggerEnter(Collider other) 
     {
-        if(!other.TryGetComponent<PlayerColor>(out var player))
+        if(!other.TryGetComponent<CharacterColor>(out var player))
             return;
             
-        ChangeColor(player.ColorConfig, other.transform);
+        ChangeColor(player.ColorData, other.transform);
     }
 }

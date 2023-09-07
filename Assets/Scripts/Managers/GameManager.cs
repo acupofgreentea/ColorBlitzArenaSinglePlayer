@@ -5,11 +5,22 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] public List<CharacterBase> players;
 
-    [SerializeField] private List<PlayerColorConfig> colorsConfig;
+    [SerializeField] private List<ColorConfig> colorsConfig;
 
     [SerializeField] private float gameTime = 60f;
 
-    public PlayerColorConfig GetColor => colorsConfig[Count - 1];
+    public ColorConfig GetColor => colorsConfig[Count - 1];
+
+    private void Start() 
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            CharacterBase character = players[i];
+            ColorConfig colorConfig = colorsConfig[i];
+
+            character.CharacterColor.SetColorData(colorConfig.GetColorData);
+        }   
+    }
     
     private void Update() 
     {
