@@ -9,36 +9,14 @@ public class PlayerMovement : CharacterMovement
 
     public Vector3 MovementInput {get; set;}
 
-    private PlayerInput inputActions;
-
-    private void Awake() 
-    {
-        inputActions = new PlayerInput();
-    }
-
-    private void Start() 
-    {
-        EnableMovement();    
-    }
-
-    public void EnableMovement()
-    {
-        inputActions.Enable();
-    }
-
-    public void DisableMovement()
-    {
-        inputActions.Disable();
-    }
-
-    
     private void Update() 
     {
         Move();
     }
+    
     private void Move()
     {
-        var Direction = inputActions.PlayerActions.Movement.ReadValue<Vector3>().normalized;
+        var Direction = CharacterBase.PlayerInputHandler.MoveInput.normalized;
 
         OnMovementUpdate?.Invoke(Direction.ToVector2());
 

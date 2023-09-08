@@ -1,5 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Events;
+using System.Collections;
+using UnityEngine.Lumin;
 
 public class GridCell : MonoBehaviour, IHaveColor
 {
@@ -9,10 +12,24 @@ public class GridCell : MonoBehaviour, IHaveColor
 
     public ColorType ColorType => ColorData.ColorType;
 
+    public ColorBombGridCell ColorBombGridCell {get; private set;}
+
+    public event UnityAction<CharacterBase> OnTriggered;
+    private readonly int colorID = Shader.PropertyToID("_Color");
+
+    private void Awake() 
+    {
+        ColorBombGridCell = GetComponent<ColorBombGridCell>();    
+    }
+
     private void Start() 
     {
-        _renderer = GetComponent<Renderer>();
-        this.DelayOneFrame(()=> _renderer.material.color = ColorData.Color);
+        _renderer = GetComponentInChildren<Renderer>();
+        this.DelayOneFrame(()=> {
+            MaterialPropertyBlock.SetColor(colorID, ColorData.Color);
+            _renderer.SetPropertyBlock(MaterialPropertyBlock);
+    }
+    );
     }
     
     public void SetColorData(ColorData colorData)
@@ -29,16 +46,55 @@ public class GridCell : MonoBehaviour, IHaveColor
 
         var direction = transform.position - other.transform.position;
         direction.y = 0f;
-        _renderer.material.DOColor(ColorData.Color, 0.2f);
-        transform.DOComplete();
+
+        StartCoroutine(ColorSequence());
+        IEnumerator ColorSequence()
+        {
+            float elapsedTime = 0f;
+            float changeTimer = 0.2f;
+            Color startColor = MaterialPropertyBlock.GetColor(colorID);
+            Color targetColor = ColorData.Color;
+            
+            while (elapsedTime < changeTimer)
+            {
+                elapsedTime += Time.deltaTime;
+                Color colorValue = Color.Lerp(startColor, targetColor, elapsedTime / changeTimer);
+                MaterialPropertyBlock.SetColor(colorID, colorValue);
+                _renderer.SetPropertyBlock(MaterialPropertyBlock);
+                yield return null;
+            }
+        }
+
+        //_renderer.material.DOColor(ColorData.Color, 0.2f);
+        //transform.DOComplete();
+
         transform.DOShakePosition(0.2f, direction.normalized * 0.4f, 10);
     }
 
+    private MaterialPropertyBlock materialPropertyBlock;
+
+    public MaterialPropertyBlock MaterialPropertyBlock
+    {
+        get
+        {
+            if (materialPropertyBlock == null)
+                materialPropertyBlock = new MaterialPropertyBlock();
+
+            return materialPropertyBlock;
+        }
+    }
+
+
     private void OnTriggerEnter(Collider other) 
     {
-        if(!other.TryGetComponent<CharacterColor>(out var player))
+        if(!other.TryGetComponent<CharacterBase>(out var player))
             return;
-            
-        ChangeColor(player.ColorData, other.transform);
+
+        if(player == Player.Instance)
+            GameManager.PlayerPaintCount++;
+        
+        OnTriggered?.Invoke(player);
+        
+        ChangeColor(player.CharacterColor.ColorData, other.transform);
     }
 }

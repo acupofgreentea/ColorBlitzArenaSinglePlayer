@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerAnimationController : CharacterAnimationControllerBase
 {
@@ -13,6 +15,11 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
             {AnimationKeys.Punch, AnimationHashKeys.PunchHashKey},
             {AnimationKeys.PunchRandomMultp, AnimationHashKeys.PunchRandomMultpHashKey},
         };
+    }
+    private void Start() 
+    {
+        CharacterBase.PlayerPunchController.OnGetPunched += HandleGetPunch;
+        CharacterBase.PlayerPunchController.OnPunchUse += HandlePunchUse;
     }
 
     private void Update()
@@ -32,4 +39,24 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
         
         SetFloat(AnimationKeys.Move, currentMoveParamValue);
     }
+
+    private void HandleGetPunch(float stunDuration)
+    {
+        StartCoroutine(Sequence());
+        IEnumerator Sequence()
+        {
+            SetBool(AnimationKeys.IsStun, true);
+
+            yield return new WaitForSeconds(stunDuration);
+
+            SetBool(AnimationKeys.IsStun, false);
+        }
+    }
+    
+    private void HandlePunchUse()
+    {
+        SetFloat(AnimationKeys.PunchRandomMultp, Random.Range(1f, 1.5f));
+        SetTrigger(AnimationKeys.Punch);
+    }
+    
 }

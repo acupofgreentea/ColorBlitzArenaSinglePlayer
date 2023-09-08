@@ -11,6 +11,6 @@ public class PlayerAnimationEventHandler : MonoBehaviour
 
     public void HitPunch()
     {
-        //player.PlayerPunchController.HitPunch();
+        player.PlayerPunchController.HitPunch();
     }
 }
