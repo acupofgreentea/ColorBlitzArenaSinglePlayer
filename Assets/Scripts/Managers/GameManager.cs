@@ -1,25 +1,42 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] public List<CharacterBase> players;
+    [SerializeField] private List<CharacterBase> players;
 
     [SerializeField] private List<ColorConfig> colorsConfig;
 
+    [SerializeField] private NamesSO playerNames;
+
     [SerializeField] private float gameTime = 60f;
 
-    public ColorConfig GetColor => colorsConfig[Count - 1];
+    public int Count => players.Count;
+
+    public event UnityAction<string[]> OnNamesSet;
+
+    public static int PlayerPaintCount = 0;
 
     private void Start() 
     {
+        List<string> randomNames = playerNames.GenerateRandomNames(players.Count);
+        string playerDataName = PlayerDataHelper.Instance.Load().PlayerName;
+
+        string[] names = new string[players.Count];
+
         for (int i = 0; i < players.Count; i++)
         {
             CharacterBase character = players[i];
             ColorConfig colorConfig = colorsConfig[i];
 
             character.CharacterColor.SetColorData(colorConfig.GetColorData);
-        }   
+            string chName = i == 0 ? (string.IsNullOrEmpty(playerDataName) ? randomNames[i] : playerDataName) : randomNames[i]; //first index of players is actual player
+            character.CharacterName.SetCharacterName(chName);
+            names[i] = chName;
+        } 
+
+        OnNamesSet?.Invoke(names);
     }
     
     private void Update() 
@@ -33,28 +50,13 @@ public class GameManager : MonoBehaviour
         GUI.Label(new Rect(150, 0, 20, 20), remaningTime.ToString());
     }
 
-    public int Count => players.Count;
-    public void AddPlayer(CharacterBase player)
+    public CharacterBase GetPlayAtIndex(int i) => players[i];
+
+    private void OnApplicationQuit()
     {
-        if(players.Contains(player))
-        {
-            Debug.LogError("Player is already added");
-            return;
-        }
-
-        players.Add(player);
+        var data = PlayerDataHelper.Instance.Load();
+        data.GridPaintedCount += PlayerPaintCount;
+        PlayerDataHelper.Instance.Save();
     }
-
-    public void RemovePlayer(CharacterBase player)
-    {
-        if(!players.Contains(player))
-        {
-            Debug.LogError("The player is not exist in the list.");
-            return;
-        }
-
-        players.Remove(player);
-    }
-
    
 }

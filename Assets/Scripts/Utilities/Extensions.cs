@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,5 +25,10 @@ public static class Extensions
             
             action?.Invoke();
         }
+    }
+
+    public static T GetRandom<T>(this List<T> list)
+    {
+        return list[Random.Range(0, list.Count)];
     }
 }

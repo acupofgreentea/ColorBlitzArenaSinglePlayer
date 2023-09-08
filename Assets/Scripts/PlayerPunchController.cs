@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
 {
@@ -7,25 +8,31 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
 
     private Player player;
 
+    public event UnityAction OnPunchUse;
+    public event UnityAction<float> OnGetPunched;
+
     public PlayerPunchController Init(Player player)
     {
         this.player = player;
         return this;
     }
 
-    public void HandleGetPunch()
+    private void Start() 
     {
-        StartCoroutine(Sequence());
-        IEnumerator Sequence()
-        {
-            player.CharacterAnimationControllerBase.SetBool(AnimationKeys.IsStun, true);
-
-            yield return new WaitForSeconds(stunDuration);
-
-            player.CharacterAnimationControllerBase.SetBool(AnimationKeys.IsStun, false);
-        }
+        player.PlayerInputHandler.OnPunch += HandleOnPunch;
     }
 
+    private void HandleOnPunch()
+    {
+
+    }
+
+    public void HandleGetPunch()
+    {
+        OnGetPunched?.Invoke(stunDuration);
+    }
+
+    //animation event trigger
     public void HitPunch()
     {
         currentPunchable.HandleGetPunch();
@@ -33,25 +40,17 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
 
     public void Punch()
     {
-        player.CharacterAnimationControllerBase.SetFloat(AnimationKeys.PunchRandomMultp, Random.Range(1f, 1.5f));
-        player.CharacterAnimationControllerBase.SetTrigger(AnimationKeys.Punch);
+        OnPunchUse?.Invoke();
     }
 
     private IPunchable currentPunchable;
 
     private void OnTriggerEnter(Collider other) 
     {
-
         if(!other.TryGetComponent(out IPunchable punchable) || other == this)
             return;
 
-        /*if(other.TryGetComponent(out NetworkCharacterControllerPrototype networkCharacterController))
-        {
-            if(!networkCharacterController.IsStunned)
-                Punch();
-*/
-            currentPunchable = punchable;
-        //}
+        currentPunchable = punchable;
     }
 }
 
