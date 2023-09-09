@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,7 +23,7 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
 
     private void HandleOnPunch()
     {
-
+        Punch();
     }
 
     public void HandleGetPunch()
@@ -35,23 +34,30 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
     //animation event trigger
     public void HitPunch()
     {
-        currentPunchable.HandleGetPunch();
+        var colliders = Physics.OverlapSphere(transform.position, 3f);
+        
+        foreach (var col in colliders)
+        {
+            if(col.TryGetComponent<IPunchable>(out var punchable))
+            {
+                if(col.gameObject.GetInstanceID() == this.gameObject.GetInstanceID())
+                    continue;
+                
+                punchable.HandleGetPunch();
+            }
+        }
     }
 
+    private void OnDrawGizmos() 
+    {
+        Gizmos.DrawWireSphere(transform.position, 3f);    
+    }
     public void Punch()
     {
         OnPunchUse?.Invoke();
     }
 
     private IPunchable currentPunchable;
-
-    private void OnTriggerEnter(Collider other) 
-    {
-        if(!other.TryGetComponent(out IPunchable punchable) || other == this)
-            return;
-
-        currentPunchable = punchable;
-    }
 }
 
 public interface IPunchable

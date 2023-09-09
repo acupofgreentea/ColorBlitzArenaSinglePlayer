@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     {
         var data = PlayerDataHelper.Instance.Load();
         data.GridPaintedCount += PlayerPaintCount;
+        data.SetCount(colorsConfig[0].ColorType, PlayerPaintCount);
         PlayerDataHelper.Instance.Save();
     }
    

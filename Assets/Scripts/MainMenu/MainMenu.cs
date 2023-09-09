@@ -11,6 +11,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TMP_InputField playerNameField;
 
     [SerializeField] private TMP_Text gridPaintedCountText; 
+    [SerializeField] private TMP_Text bluePaintedCountText; 
+    [SerializeField] private TMP_Text yellowPaintedCountText; 
+    [SerializeField] private TMP_Text redPaintedCountText; 
+    [SerializeField] private TMP_Text greenPaintedCountText; 
 
     public static event UnityAction OnPlayButtonPressed;
 
@@ -28,6 +32,11 @@ public class MainMenu : MonoBehaviour
         var data = PlayerDataHelper.Instance.Load();
         gridPaintedCountText.text = data.GridPaintedCount.ToString();
         playerNameField.placeholder.GetComponent<TMP_Text>().text = String.IsNullOrEmpty(data.PlayerName) ? "Enter name..." : data.PlayerName;
+
+        bluePaintedCountText.text =   data.BluePaintCount.ToString();
+        yellowPaintedCountText.text = data.YellowPaintCount.ToString();
+        redPaintedCountText.text =    data.RedPaintCount.ToString();
+        greenPaintedCountText.text =  data.GreenPaintCount.ToString();
     }
 
     private void PlayButtonPressed()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BayatGames.SaveGameFree;
 using UnityEngine;
 
@@ -33,4 +34,33 @@ public class PlayerData
 {
     public string PlayerName {get; set;}
     public int GridPaintedCount {get; set;}
+
+    public int BluePaintCount;
+    public int RedPaintCount;
+    public int YellowPaintCount;
+    public int GreenPaintCount;
+
+    public void SetCount(ColorType colorType, int amount)
+    {
+        switch (colorType)
+        {
+            case ColorType.Blue:
+            BluePaintCount += amount;
+                break;
+            case ColorType.Red:
+                    RedPaintCount += amount;
+                break;
+            case ColorType.Yellow:
+                    YellowPaintCount += amount;
+                break;
+            case ColorType.Green:
+                    GreenPaintCount += amount;
+                break;
+        }
+    }
+}
+
+public struct PaintCounter
+{
+    public ColorType colorType;
 }
