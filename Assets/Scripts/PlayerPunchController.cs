@@ -1,36 +1,17 @@
 using UnityEngine;
-using UnityEngine.Events;
 
-public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
+public class PlayerPunchController : MonoBehaviour
 {
     [SerializeField] private float stunDuration = 1.25f;
 
     private Player player;
-
-    public event UnityAction OnPunchUse;
-    public event UnityAction<float> OnGetPunched;
 
     public PlayerPunchController Init(Player player)
     {
         this.player = player;
         return this;
     }
-
-    private void Start() 
-    {
-        player.PlayerInputHandler.OnPunch += HandleOnPunch;
-    }
-
-    private void HandleOnPunch()
-    {
-        Punch();
-    }
-
-    public void HandleGetPunch()
-    {
-        OnGetPunched?.Invoke(stunDuration);
-    }
-
+    
     //animation event trigger
     public void HitPunch()
     {
@@ -42,8 +23,11 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
             {
                 if(col.gameObject.GetInstanceID() == this.gameObject.GetInstanceID())
                     continue;
+
+                if(punchable.IsStunned)
+                    return;
                 
-                punchable.HandleGetPunch();
+                punchable.HandleGetPunch(stunDuration);
             }
         }
     }
@@ -52,17 +36,13 @@ public class PlayerPunchController : MonoBehaviour, IPunchable, IPunchUser
     {
         Gizmos.DrawWireSphere(transform.position, 3f);    
     }
-    public void Punch()
-    {
-        OnPunchUse?.Invoke();
-    }
-
-    private IPunchable currentPunchable;
 }
 
 public interface IPunchable
 {
-    void HandleGetPunch();
+    void HandleGetPunch(float stunDuration);
+
+    bool IsStunned {get; }
 }
 
 public interface IPunchUser

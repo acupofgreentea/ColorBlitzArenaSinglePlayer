@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class TestDummy : MonoBehaviour, IPunchable
 {
-    public void HandleGetPunch()
+    public bool IsStunned => throw new System.NotImplementedException();
+
+    public void HandleGetPunch(float stunDuration)
     {
         Debug.LogError("Damaged");
     }

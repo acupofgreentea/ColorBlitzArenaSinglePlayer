@@ -16,11 +16,18 @@ public class GridManager : MonoBehaviour
     [SerializeField] private ColorConfig defaultGridConfig;
 
     public GridCell GetRandomGridCell => gridCells.GetRandom();
+    private IGridCellPicker gridCellPicker;
 
+    private void Awake() 
+    {
+        gridCellPicker = GetComponent<IGridCellPicker>().Init(gridCells);    
+    }
     private void Start() 
     {
         SetAllGridsColorDataToDefault();    
     }
+
+    public GridCell GetGridCell() => gridCellPicker.GetGridCell();
 
     private void SetAllGridsColorDataToDefault()
     {

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class PlayerAnimationController : CharacterAnimationControllerBase
 {
@@ -18,28 +17,10 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
     }
     private void Start() 
     {
-        CharacterBase.PlayerPunchController.OnGetPunched += HandleGetPunch;
-        CharacterBase.PlayerPunchController.OnPunchUse += HandlePunchUse;
+        CharacterBase.OnGetPunched += HandleGetPunch;
+        CharacterBase.OnPunchUse += HandlePunchUse;
+        CharacterBase.CharacterMovement.OnMovementUpdate += HandleOnMovementUpdate;
     }
-
-    private void Update()
-    {
-        HandleOnMovementUpdate(CharacterBase.CharacterMovement.MovementInput.sqrMagnitude);
-    }
-
-    private float moveLerpSpeed = 7.5f;
-    private float currentMoveParamValue;
-    private void HandleOnMovementUpdate(float moveInput)
-    {
-        float sqrMagnitude = moveInput;
-
-        currentMoveParamValue = Mathf.Lerp(currentMoveParamValue, sqrMagnitude, moveLerpSpeed * Time.deltaTime);
-
-        currentMoveParamValue = Mathf.Clamp01(currentMoveParamValue);
-        
-        SetFloat(AnimationKeys.Move, currentMoveParamValue);
-    }
-
     private void HandleGetPunch(float stunDuration)
     {
         StartCoroutine(Sequence());
@@ -50,6 +31,9 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
             yield return new WaitForSeconds(stunDuration);
 
             SetBool(AnimationKeys.IsStun, false);
+
+            yield return new WaitForSeconds(0.15f); //treshold so character will not be stunned forevers
+            CharacterBase.IsStunned = false;
         }
     }
     
@@ -58,5 +42,17 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
         SetFloat(AnimationKeys.PunchRandomMultp, Random.Range(1f, 1.5f));
         SetTrigger(AnimationKeys.Punch);
     }
-    
+
+    private float moveLerpSpeed = 7.5f;
+    private float currentMoveParamValue;
+    private void HandleOnMovementUpdate(Vector2 moveInput)
+    {
+        float sqrMagnitude = moveInput.sqrMagnitude;
+
+        currentMoveParamValue = Mathf.Lerp(currentMoveParamValue, sqrMagnitude, moveLerpSpeed * Time.deltaTime);
+
+        currentMoveParamValue = Mathf.Clamp01(currentMoveParamValue);
+        
+        SetFloat(AnimationKeys.Move, currentMoveParamValue);
+    }
 }

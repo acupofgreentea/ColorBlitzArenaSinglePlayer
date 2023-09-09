@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ public abstract class CharacterAnimationControllerBase : MonoBehaviour
     }
 
     protected abstract void CreateDictionary();
+
+    
 
     #region Get-Set Methods
     public void SetFloat(AnimationKeys key, float target)
