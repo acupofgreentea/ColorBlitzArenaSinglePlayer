@@ -46,17 +46,17 @@ public class GridManager : MonoBehaviour
         return (int)percentageOfType;
     }
 
-    // private void OnGUI() 
-    // {
-    //     int percentageOfBlue = GetPercentageOfColor(ColorType.Blue); 
-    //     int percentageOfRed = GetPercentageOfColor(ColorType.Red);
-    //     int percentageOfYellow = GetPercentageOfColor(ColorType.Yellow);
-    //     int percentageOfGreen = GetPercentageOfColor(ColorType.Green); 
-    //     int percentageOfDefault = GetPercentageOfColor(ColorType.Default);
+    private void OnGUI() 
+    {
+        int percentageOfBlue = GetPercentageOfColor(ColorType.Blue); 
+        int percentageOfRed = GetPercentageOfColor(ColorType.Red);
+        int percentageOfYellow = GetPercentageOfColor(ColorType.Yellow);
+        int percentageOfGreen = GetPercentageOfColor(ColorType.Green); 
+        int percentageOfOncolored = GetPercentageOfColor(ColorType.Uncolored);
 
-    //     GUI.Label(new Rect(0, 0, 200, 250), 
-    //     $"Blue %{percentageOfBlue}\nRed %{percentageOfRed}\nYellow %{percentageOfYellow}\nGreen %{percentageOfGreen}\nDefault %{percentageOfDefault}");    
-    // }
+        GUI.Label(new Rect(0, 0, 200, 250), 
+        $"Blue %{percentageOfBlue}\nRed %{percentageOfRed}\nYellow %{percentageOfYellow}\nGreen %{percentageOfGreen}\nUncolored %{percentageOfOncolored}");    
+    }
 
 
     #if UNITY_EDITOR

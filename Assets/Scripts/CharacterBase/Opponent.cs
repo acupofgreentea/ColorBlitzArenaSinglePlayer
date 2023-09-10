@@ -11,7 +11,7 @@ public class Opponent : CharacterBase, IPunchable, IPunchUser
     {
         base.Awake();
         OpponentPunchController = GetComponent<OpponentPunchController>();
-        OpponentAnimationEventHandler = GetComponent<OpponentAnimationEventHandler>().Init(this);
+        OpponentAnimationEventHandler = GetComponentInChildren<OpponentAnimationEventHandler>().Init(this);
     }
 
     public event UnityAction OnPunchUse;

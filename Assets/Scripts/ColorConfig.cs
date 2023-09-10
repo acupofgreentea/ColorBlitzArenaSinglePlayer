@@ -16,7 +16,7 @@ public enum ColorType
     Red,
     Green,
     Yellow,
-    Default
+    Uncolored
 }
 
 public struct ColorData
