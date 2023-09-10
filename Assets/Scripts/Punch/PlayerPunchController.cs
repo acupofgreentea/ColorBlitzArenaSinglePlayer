@@ -1,21 +1,11 @@
 using UnityEngine;
 
-public class PlayerPunchController : MonoBehaviour
+public class PlayerPunchController : CharacterPunchControllerBase
 {
-    [SerializeField] private float stunDuration = 1.25f;
-
-    private Player player;
-
-    public PlayerPunchController Init(Player player)
-    {
-        this.player = player;
-        return this;
-    }
-    
     //animation event trigger
-    public void HitPunch()
+    public override void HitPunch()
     {
-        var colliders = Physics.OverlapSphere(transform.position, 3f);
+        var colliders = Physics.OverlapSphere(punchPivot.position, PunchStatsSO.PunchRange);
         
         foreach (var col in colliders)
         {
@@ -27,14 +17,10 @@ public class PlayerPunchController : MonoBehaviour
                 if(punchable.IsStunned)
                     return;
                 
-                punchable.HandleGetPunch(stunDuration);
+                punchable.HandleGetPunch(PunchStatsSO.StunDuration);
+                break;
             }
         }
-    }
-
-    private void OnDrawGizmos() 
-    {
-        Gizmos.DrawWireSphere(transform.position, 3f);    
     }
 }
 

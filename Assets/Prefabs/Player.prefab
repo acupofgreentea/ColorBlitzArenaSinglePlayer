@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6266603219208131307
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5174280904830149941}
+  m_Layer: 0
+  m_Name: PunchPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5174280904830149941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6266603219208131307}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.53, z: 1.72}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5446763406535050158}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &9105857870878144985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -78,6 +109,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc71df7b216b8a44ae9ab6a0632c251, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &5446763406535050158 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3875429980825238135, guid: 14040b50fce8c2941bc9943b80fb074d, type: 3}
+  m_PrefabInstance: {fileID: 9105857870878144985}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6948289308223367188 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2176304265657487821, guid: 14040b50fce8c2941bc9943b80fb074d, type: 3}
@@ -119,7 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4fcaedc94058434bb438705e005c73c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stunDuration: 1.25
+  <PunchStatsSO>k__BackingField: {fileID: 11400000, guid: b4ed313588480da458fed7cbebc377da, type: 2}
+  punchPivot: {fileID: 5174280904830149941}
 --- !u!114 &3934604397199410052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,5 +181,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba34349708151084384cbc9f8b852fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rotateSpeed: 6
+  moveSpeed: 10
+  rotateSpeed: 11

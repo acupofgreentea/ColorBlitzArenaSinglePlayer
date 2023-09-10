@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,6 +11,22 @@ public class PlayerMovement : CharacterMovement
 
     public Vector3 MovementInput {get; set;}
 
+    private void Start() 
+    {
+        CharacterBase.OnGetPunched += HandleGetPunched;  
+        CharacterBase.OnStunFinished += EnableMovement;  
+    }
+
+    private void HandleStunFinished()
+    {
+        EnableMovement();
+    }
+
+    private void HandleGetPunched(float stunDuration)
+    {        
+        DisableMovement();
+    }
+
     private void Update() 
     {
         Move();
@@ -16,6 +34,9 @@ public class PlayerMovement : CharacterMovement
     
     private void Move()
     {
+        if(isAgentDisabled)
+            return;
+        
         var Direction = CharacterBase.PlayerInputHandler.MoveInput.normalized;
 
         OnMovementUpdate?.Invoke(Direction.ToVector2());

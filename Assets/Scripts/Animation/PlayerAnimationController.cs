@@ -18,23 +18,26 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
     private void Start() 
     {
         CharacterBase.OnGetPunched += HandleGetPunch;
+        CharacterBase.OnStunFinished += HandleStunFinished;
         CharacterBase.OnPunchUse += HandlePunchUse;
         CharacterBase.CharacterMovement.OnMovementUpdate += HandleOnMovementUpdate;
     }
-    private void HandleGetPunch(float stunDuration)
+
+    private void HandleStunFinished()
     {
+        SetBool(AnimationKeys.IsStun, false);
+        
         StartCoroutine(Sequence());
         IEnumerator Sequence()
         {
-            SetBool(AnimationKeys.IsStun, true);
-
-            yield return new WaitForSeconds(stunDuration);
-
-            SetBool(AnimationKeys.IsStun, false);
-
             yield return new WaitForSeconds(0.15f); //treshold so character will not be stunned forevers
             CharacterBase.IsStunned = false;
         }
+    }
+
+    private void HandleGetPunch(float stunDuration)
+    {
+        SetBool(AnimationKeys.IsStun, true);
     }
     
     private void HandlePunchUse()

@@ -12,6 +12,7 @@ public class CharacterMovement : MonoBehaviour
     protected CharacterBase CharacterBase {get; private set;}
 
     public float MoveSpeed => moveSpeed;
+    protected bool isAgentDisabled = false;
 
     public CharacterMovement Init(CharacterBase characterBase)
     {
@@ -26,4 +27,16 @@ public class CharacterMovement : MonoBehaviour
 
     public void SetSpeedDefault() => moveSpeed = defaultSpeed;
     public void SetSpeedByMultp(float multp) => moveSpeed *= multp;
+
+    public virtual void DisableMovement()
+    {
+        isAgentDisabled = true;
+        agent.enabled = false;
+    }
+
+    public virtual void EnableMovement()
+    {
+        isAgentDisabled = false;        
+        agent.enabled = true;
+    }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -23,22 +22,32 @@ public class OpponentAnimationController : CharacterAnimationControllerBase
     {
         CharacterBase.CharacterMovement.OnMovementStateUpdated += HandleOnMovementUpdate;
         CharacterBase.OnGetPunched += HandleGetPunched;
+        CharacterBase.OnStunFinished += HandleStunFinished;
+        CharacterBase.OnPunchUse += HandleUsePunch;
+    }
+
+    private void HandleStunFinished()
+    {
+        SetBool(AnimationKeys.IsStun, false);
+
+        StartCoroutine(Sequence());
+        IEnumerator Sequence()
+        {
+            yield return new WaitForSeconds(0.15f);
+            CharacterBase.IsStunned = false;
+        }
+    }
+
+    private void HandleUsePunch()
+    {
+        SetFloat(AnimationKeys.PunchRandomMultp, Random.Range(1f, 1.5f));
+        SetTrigger(AnimationKeys.Punch);
     }
 
     private void HandleGetPunched(float stunDuration)
     {
-        StartCoroutine(Sequence());
-        IEnumerator Sequence()
-        {
-            SetBool(AnimationKeys.IsStun, true);
-
-            yield return new WaitForSeconds(stunDuration);
-
-            SetBool(AnimationKeys.IsStun, false);
-
-            yield return new WaitForSeconds(0.15f);
-            CharacterBase.IsStunned = false;
-        }
+        SetBool(AnimationKeys.IsStun, true);
+        
     }
 
     private Coroutine movementUpdateCoroutine;

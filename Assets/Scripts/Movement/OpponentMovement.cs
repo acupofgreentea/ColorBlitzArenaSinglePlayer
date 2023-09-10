@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,23 +6,21 @@ public class OpponentMovement : CharacterMovement
 {
     public new Opponent CharacterBase => base.CharacterBase as Opponent; 
 
-    private bool isAgentDisabled = false;
-
     private void Start() 
     {
         agent.speed = moveSpeed;   
         CharacterBase.OnGetPunched += HandleOnGetPunched;
+        CharacterBase.OnStunFinished += HandleStunFinished;
+    }
+
+    private void HandleStunFinished()
+    {
+        EnableMovement();
     }
 
     private void HandleOnGetPunched(float stunDuration)
     {
-        StartCoroutine(Sequence());
-        IEnumerator Sequence()
-        {
-            DisableMovement();
-            yield return new WaitForSeconds(stunDuration);
-            EnableMovement();
-        }
+        DisableMovement();
     }
 
     public event UnityAction<bool> OnMovementStateUpdated;
@@ -37,18 +34,16 @@ public class OpponentMovement : CharacterMovement
         lastPickTime = Time.time;
     }
 
-    private void DisableMovement()
+    public override void DisableMovement()
     {
         OnMovementStateUpdated?.Invoke(true);
-        isAgentDisabled = true;
-        agent.enabled = false;
+        base.DisableMovement();
     }
 
-    private void EnableMovement()
+    public override void EnableMovement()
     {
         OnMovementStateUpdated?.Invoke(false);
-        isAgentDisabled = false;        
-        agent.enabled = true;
+        base.EnableMovement();
     }
 
     private float gridPickInterval = 3f;

@@ -11,6 +11,6 @@ public class OpponentAnimationEventHandler : MonoBehaviour
 
     public void HitPunch()
     {
-        opponent.OpponentPunchController.HitPunch();
+        opponent.CharacterPunchController.HitPunch();
     }
 }
