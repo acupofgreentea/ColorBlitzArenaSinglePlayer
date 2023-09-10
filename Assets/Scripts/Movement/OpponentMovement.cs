@@ -5,12 +5,17 @@ using UnityEngine.Events;
 public class OpponentMovement : CharacterMovement
 {
     public new Opponent CharacterBase => base.CharacterBase as Opponent; 
+    public event UnityAction<bool> OnMovementStateUpdated;
 
     private void Start() 
     {
         agent.speed = moveSpeed;   
+        DisableMovement();
+
         CharacterBase.OnGetPunched += HandleOnGetPunched;
         CharacterBase.OnStunFinished += HandleStunFinished;
+        SessionManager.OnSessionStart += EnableMovement;
+        SessionManager.OnSessionFinish += DisableMovement;
     }
 
     private void HandleStunFinished()
@@ -23,7 +28,6 @@ public class OpponentMovement : CharacterMovement
         DisableMovement();
     }
 
-    public event UnityAction<bool> OnMovementStateUpdated;
 
     public void SetDestination(Vector3 destination)
     {
@@ -72,10 +76,4 @@ public class OpponentMovement : CharacterMovement
         GridCell targetGrid = Managers.Instance.GridManager.GetGridCell();
         return targetGrid.transform.position;
     }
-}
-
-public interface IGridCellPicker
-{
-    GridCell GetGridCell();
-    IGridCellPicker Init(List<GridCell> grids);
 }

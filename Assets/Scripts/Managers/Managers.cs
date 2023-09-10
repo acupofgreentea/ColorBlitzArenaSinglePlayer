@@ -4,6 +4,7 @@ public class Managers : MonoBehaviour
 {
     public GameManager GameManager {get; private set;}
     public GridManager GridManager {get; private set;}
+    public SessionManager SessionManager {get; private set;}
 
     public static Managers Instance {get; private set;}
     private void Awake() 
@@ -22,5 +23,6 @@ public class Managers : MonoBehaviour
     {
         GameManager = GetComponentInChildren<GameManager>();
         GridManager = GetComponentInChildren<GridManager>();
+        SessionManager = GetComponentInChildren<SessionManager>();
     }
 }

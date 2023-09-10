@@ -22,7 +22,9 @@ public class PlayerInputHandler : MonoBehaviour
         inputActions.PlayerActions.Punch.performed += HandlePunchPerform;   
         player.OnGetPunched += HandleGetPunched;
         player.OnStunFinished += HandleStunFinished;
-        EnableInput(); 
+        DisableInput();
+        SessionManager.OnSessionStart += EnableInput; 
+        SessionManager.OnSessionFinish += DisableInput; 
     }
 
     private void HandleStunFinished()

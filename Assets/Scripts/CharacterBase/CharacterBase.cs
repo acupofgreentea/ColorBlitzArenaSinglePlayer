@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,12 @@ public class CharacterBase : MonoBehaviour, IPunchable, IPunchUser
         CharacterPunchController = GetComponent<CharacterPunchControllerBase>().Init(this);
         CharacterColor = GetComponent<CharacterColor>();
         CharacterName = GetComponent<CharacterName>();
+        SessionManager.OnSessionStart += HandleSessionStart;
+    }
+
+    private void HandleSessionStart()
+    {
+        GetComponent<Collider>().enabled = true;
     }
 
     public event UnityAction OnPunchUse;

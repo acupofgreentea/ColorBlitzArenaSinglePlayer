@@ -16,3 +16,9 @@ public class RandomGridCellPicker : MonoBehaviour, IGridCellPicker
         return this;
     }
 }
+
+public interface IGridCellPicker
+{
+    GridCell GetGridCell();
+    IGridCellPicker Init(List<GridCell> grids);
+}

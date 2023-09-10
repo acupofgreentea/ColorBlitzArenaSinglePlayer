@@ -87,6 +87,7 @@ public class GridCell : MonoBehaviour, IHaveColor
 
     private void OnTriggerEnter(Collider other) 
     {
+        transform.DOComplete();
         if(!other.TryGetComponent<CharacterBase>(out var player))
             return;
 

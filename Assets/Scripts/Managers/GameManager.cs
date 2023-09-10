@@ -10,8 +10,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private NamesSO playerNames;
 
-    [SerializeField] private float gameTime = 60f;
-
     public int Count => players.Count;
 
     public event UnityAction<string[]> OnNamesSet;
@@ -37,17 +35,6 @@ public class GameManager : MonoBehaviour
         } 
 
         OnNamesSet?.Invoke(names);
-    }
-    
-    private void Update() 
-    {
-        gameTime-= Time.deltaTime;    
-    }
-    private void OnGUI() 
-    {
-        float remaningTime = gameTime;
-        remaningTime = Mathf.RoundToInt(remaningTime);
-        GUI.Label(new Rect(150, 0, 20, 20), remaningTime.ToString());
     }
 
     public CharacterBase GetPlayAtIndex(int i) => players[i];
