@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private NamesSO playerNames;
 
-    public int Count => players.Count;
+    public int PlayerCount => players.Count;
 
     public event UnityAction<string[]> OnNamesSet;
 
@@ -18,9 +19,21 @@ public class GameManager : MonoBehaviour
 
     private void Start() 
     {
+        SessionManager.OnSessionStart += HandleSessionStart;
+        SessionManager.OnSessionFinish += HandleSessionFinish;
+        SessionScoreboardUI.GetCharacterNames += GetCharacterNameByColorType;
+        SessionScoreboardUI.GetCharacterColor += GetColor;
+
+        SetCharacters();
+    }
+
+    private void SetCharacters()
+    {
         List<string> randomNames = playerNames.GenerateRandomNames(players.Count);
         string playerDataName = PlayerDataHelper.Instance.Load().PlayerName;
 
+        colorsConfig.Randomize();
+        
         string[] names = new string[players.Count];
 
         for (int i = 0; i < players.Count; i++)
@@ -37,14 +50,40 @@ public class GameManager : MonoBehaviour
         OnNamesSet?.Invoke(names);
     }
 
-    public CharacterBase GetPlayAtIndex(int i) => players[i];
+    private string GetCharacterNameByColorType(ColorType type)
+    {
+        return players.Find(x => x.CharacterColor.ColorData.ColorType == type).CharacterName.Name;
+    }
+    private Color GetColor(ColorType colorType)
+    {
+        var color = colorsConfig.Find(x => x.ColorType == colorType);
+        return color.Color;
+    } 
 
-    private void OnApplicationQuit()
+    public CharacterBase GetPlayAtIndex(int i) => players[i];
+    private void HandleSessionFinish()
+    {
+        SaveData();
+    }
+
+    private void HandleSessionStart()
+    {
+        PlayerPaintCount = 0;
+    }
+
+    private void SaveData()
     {
         var data = PlayerDataHelper.Instance.Load();
         data.GridPaintedCount += PlayerPaintCount;
         data.SetCount(colorsConfig[0].ColorType, PlayerPaintCount);
         PlayerDataHelper.Instance.Save();
     }
-   
+
+    private void OnDestroy() 
+    {
+        SessionManager.OnSessionStart -= HandleSessionStart;
+        SessionManager.OnSessionFinish -= HandleSessionFinish;
+        SessionScoreboardUI.GetCharacterNames -= GetCharacterNameByColorType;        
+        SessionScoreboardUI.GetCharacterColor -= GetColor;
+    }
 }

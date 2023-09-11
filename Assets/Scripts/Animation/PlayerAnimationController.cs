@@ -58,4 +58,12 @@ public class PlayerAnimationController : CharacterAnimationControllerBase
         
         SetFloat(AnimationKeys.Move, currentMoveParamValue);
     }
+
+    private void OnDestroy() 
+    {
+        CharacterBase.OnGetPunched -= HandleGetPunch;
+        CharacterBase.OnStunFinished -= HandleStunFinished;
+        CharacterBase.OnPunchUse -= HandlePunchUse;
+        CharacterBase.CharacterMovement.OnMovementUpdate -= HandleOnMovementUpdate;
+    }
 }

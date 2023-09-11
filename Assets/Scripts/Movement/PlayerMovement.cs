@@ -51,4 +51,10 @@ public class PlayerMovement : CharacterMovement
         Quaternion lookRotation = Quaternion.LookRotation(MovementInput.normalized, Vector3.up);
         transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, rotateSpeed * Time.deltaTime);
     }
+
+    private void OnDestroy() 
+    {
+        CharacterBase.OnGetPunched -= HandleGetPunched;  
+        CharacterBase.OnStunFinished -= EnableMovement;  
+    }
 }

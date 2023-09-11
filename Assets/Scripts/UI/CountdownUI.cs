@@ -35,4 +35,9 @@ public class CountdownUI : MonoBehaviour
     {
         SessionManager.OnCountdownStart += CountdownTextSequence;    
     }
+
+    private void OnDestroy() 
+    {
+        SessionManager.OnCountdownStart -= CountdownTextSequence;    
+    }
 }

@@ -12,15 +12,16 @@ public class Player : CharacterBase, IPunchable, IPunchUser
 
         if(Instance)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
         Instance = this;
     }
 
-    private void Start() 
+    protected override void Start() 
     {
+        base.Start();
         PlayerInputHandler.OnPunch += Punch;    
     }
 
@@ -28,5 +29,10 @@ public class Player : CharacterBase, IPunchable, IPunchUser
     {
         PlayerAnimationEventHandler = GetComponentInChildren<PlayerAnimationEventHandler>().Init(this);
         PlayerInputHandler = GetComponent<PlayerInputHandler>().Init(this);
+    }
+
+    private void OnDisable() 
+    {
+        PlayerInputHandler.OnPunch -= Punch;        
     }
 }

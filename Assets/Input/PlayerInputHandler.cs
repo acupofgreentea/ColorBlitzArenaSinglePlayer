@@ -29,6 +29,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void HandleStunFinished()
     {
+        if(!Managers.Instance.SessionManager.IsSessionActive)
+            return;
+
         EnableInput(); 
     }
 
@@ -53,5 +56,11 @@ public class PlayerInputHandler : MonoBehaviour
     public void DisableInput()
     {
         inputActions.Disable();
+    }
+
+    private void OnDestroy() 
+    {
+        SessionManager.OnSessionStart += EnableInput; 
+        SessionManager.OnSessionFinish += DisableInput;     
     }
 }

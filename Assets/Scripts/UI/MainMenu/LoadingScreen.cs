@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadingScreen : MonoBehaviour
@@ -19,20 +18,20 @@ public class LoadingScreen : MonoBehaviour
 
     
     private void Start() 
+    {   
+        SceneManagement.OnLoadSceneAsync += HandleLoadSceneAsync;
+    }
+
+    private void HandleLoadSceneAsync(AsyncOperation op)
     {
-        MainMenu.OnPlayButtonPressed += LoadScene;    
+        StartCoroutine(Sequence(op)); 
+
+        LoadingTextSequence();
     }
 
     private void OnDestroy() 
     {
-        MainMenu.OnPlayButtonPressed -= LoadScene;    
-    }
-
-    public void LoadScene()
-    {
-        StartCoroutine(Sequence(1)); //can set it by parameter
-
-        LoadingTextSequence();
+        SceneManagement.OnLoadSceneAsync -= HandleLoadSceneAsync;
     }
     private void LoadingTextSequence()
     {
@@ -52,19 +51,18 @@ public class LoadingScreen : MonoBehaviour
         }
     }
 
-    private IEnumerator Sequence(int sceneIndex)
+    private IEnumerator Sequence(AsyncOperation op)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
-        
         panel.SetActive(true);
 
-        while (!operation.isDone)
+        while (!op.isDone)
         {
-            float progress = Mathf.Clamp01(operation.progress / 0.9f);
+            float progress = Mathf.Clamp01(op.progress / 0.9f);
 
             fillImage.fillAmount = progress;
 
             yield return null;
         }
+        panel.SetActive(false);
     }
 }

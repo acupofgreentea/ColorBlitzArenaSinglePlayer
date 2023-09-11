@@ -47,7 +47,6 @@ public class OpponentAnimationController : CharacterAnimationControllerBase
     private void HandleGetPunched(float stunDuration)
     {
         SetBool(AnimationKeys.IsStun, true);
-        
     }
 
     private Coroutine movementUpdateCoroutine;
@@ -77,6 +76,13 @@ public class OpponentAnimationController : CharacterAnimationControllerBase
                 yield return null;
             }
         }
-        
+    }
+
+    private void OnDestroy() 
+    {
+        CharacterBase.CharacterMovement.OnMovementStateUpdated -= HandleOnMovementUpdate;
+        CharacterBase.OnGetPunched -= HandleGetPunched;
+        CharacterBase.OnStunFinished -= HandleStunFinished;
+        CharacterBase.OnPunchUse -= HandleUsePunch;    
     }
 }

@@ -10,12 +10,6 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button exitButton;
     [SerializeField] private TMP_InputField playerNameField;
 
-    [SerializeField] private TMP_Text gridPaintedCountText; 
-    [SerializeField] private TMP_Text bluePaintedCountText; 
-    [SerializeField] private TMP_Text yellowPaintedCountText; 
-    [SerializeField] private TMP_Text redPaintedCountText; 
-    [SerializeField] private TMP_Text greenPaintedCountText; 
-
     public static event UnityAction OnPlayButtonPressed;
 
     private void Start() 
@@ -24,24 +18,19 @@ public class MainMenu : MonoBehaviour
         exitButton.onClick.AddListener(ExitButtonPressed); 
         playerNameField.onEndEdit.AddListener(SetPlayerName);   
 
-        SetTexts();
+        SetNameInputFieldText();
     }
-
-    private void SetTexts()
+    
+    private void SetNameInputFieldText()
     {
         var data = PlayerDataHelper.Instance.Load();
-        gridPaintedCountText.text = data.GridPaintedCount.ToString();
         playerNameField.placeholder.GetComponent<TMP_Text>().text = String.IsNullOrEmpty(data.PlayerName) ? "Enter name..." : data.PlayerName;
-
-        bluePaintedCountText.text =   data.BluePaintCount.ToString();
-        yellowPaintedCountText.text = data.YellowPaintCount.ToString();
-        redPaintedCountText.text =    data.RedPaintCount.ToString();
-        greenPaintedCountText.text =  data.GreenPaintCount.ToString();
     }
 
     private void PlayButtonPressed()
     {
         OnPlayButtonPressed?.Invoke();
+        SceneManagement.Instance.LoadSceneAsync(1);//gamescene
     }
 
     private void ExitButtonPressed()

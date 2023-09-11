@@ -31,4 +31,19 @@ public static class Extensions
     {
         return list[Random.Range(0, list.Count)];
     }
+
+    public static List<T> Randomize<T>(this List<T> list)
+    {
+        System.Random random = new System.Random();
+
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int j = random.Next(0, i + 1);
+            T temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+
+        return list;
+    }
 }

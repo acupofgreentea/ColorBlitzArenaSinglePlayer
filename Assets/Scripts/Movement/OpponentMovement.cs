@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,6 +19,9 @@ public class OpponentMovement : CharacterMovement
 
     private void HandleStunFinished()
     {
+        if(!Managers.Instance.SessionManager.IsSessionActive)
+            return;
+        
         EnableMovement();
     }
 
@@ -27,8 +29,6 @@ public class OpponentMovement : CharacterMovement
     {
         DisableMovement();
     }
-
-
     public void SetDestination(Vector3 destination)
     {
         if(!isAgentDisabled)
@@ -75,5 +75,13 @@ public class OpponentMovement : CharacterMovement
     {
         GridCell targetGrid = Managers.Instance.GridManager.GetGridCell();
         return targetGrid.transform.position;
+    }
+
+    private void OnDestroy() 
+    {
+        CharacterBase.OnGetPunched -= HandleOnGetPunched;
+        CharacterBase.OnStunFinished -= HandleStunFinished;
+        SessionManager.OnSessionStart -= EnableMovement;
+        SessionManager.OnSessionFinish -= DisableMovement;    
     }
 }

@@ -1,14 +1,16 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 public class CharacterBase : MonoBehaviour, IPunchable, IPunchUser
 {
+    [field: SerializeField] public Transform NameTextPosition {get; private set;}
     public CharacterMovement CharacterMovement {get; private set;}
     public CharacterAnimationControllerBase CharacterAnimationControllerBase {get; private set;}
     public CharacterColor CharacterColor {get; private set;}
     public CharacterName CharacterName {get; private set;}
     public CharacterPunchControllerBase CharacterPunchController {get; private set;}
+
+    private Collider col;
 
     protected virtual void Awake()
     {
@@ -17,12 +19,18 @@ public class CharacterBase : MonoBehaviour, IPunchable, IPunchUser
         CharacterPunchController = GetComponent<CharacterPunchControllerBase>().Init(this);
         CharacterColor = GetComponent<CharacterColor>();
         CharacterName = GetComponent<CharacterName>();
+        col = GetComponent<Collider>();
+        col.enabled = false;
+    }
+
+    protected virtual void Start()
+    {    
         SessionManager.OnSessionStart += HandleSessionStart;
     }
 
     private void HandleSessionStart()
     {
-        GetComponent<Collider>().enabled = true;
+        col.enabled = true;
     }
 
     public event UnityAction OnPunchUse;
@@ -45,5 +53,10 @@ public class CharacterBase : MonoBehaviour, IPunchable, IPunchUser
     public void Punch()
     {
         OnPunchUse?.Invoke();
+    }
+
+    void OnDestroy()
+    {
+        SessionManager.OnSessionStart -= HandleSessionStart;
     }
 }

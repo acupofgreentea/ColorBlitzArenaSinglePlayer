@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -24,7 +25,8 @@ public class GridManager : MonoBehaviour
     }
     private void Start() 
     {
-        SetAllGridsColorDataToDefault();    
+        SetAllGridsColorDataToDefault();
+        SessionScoreboardUI.GetScoreboardPercentages += GetPaintedCounts;
     }
 
     public GridCell GetGridCell() => gridCellPicker.GetGridCell();
@@ -44,6 +46,34 @@ public class GridManager : MonoBehaviour
         percentageOfType = Mathf.RoundToInt(percentageOfType);
 
         return (int)percentageOfType;
+    }
+
+    private int GetCountOfColor(ColorType type)
+    {
+        int countOfType = gridCells.FindAll(x => x.ColorType == type).Count;
+        return countOfType;    
+    }
+
+    private List<(ColorType, int)> GetPaintedCounts()
+    {
+        int percentageOfBlue = GetCountOfColor(ColorType.Blue); 
+        int percentageOfRed = GetCountOfColor(ColorType.Red);
+        int percentageOfYellow = GetCountOfColor(ColorType.Yellow);
+        int percentageOfGreen = GetCountOfColor(ColorType.Green); 
+        
+        var blue = (ColorType.Blue, percentageOfBlue); 
+        var red = (ColorType.Red, percentageOfRed); 
+        var yellow = (ColorType.Yellow, percentageOfYellow); 
+        var green = (ColorType.Green, percentageOfGreen); 
+
+        List<(ColorType, int)> values = new()
+        {
+            blue, red, yellow, green
+        };
+
+        values = values.OrderByDescending(x=> x.Item2).ToList();
+
+        return values;
     }
 
     private void OnGUI() 
@@ -113,5 +143,10 @@ public class GridManager : MonoBehaviour
         
         gridsInRange = gridsInRange.OrderBy(x => Vector3.Distance(x.transform.position, target.position)).ToList();
         return gridsInRange;
+    }
+
+    private void OnDestroy()
+    {
+        SessionScoreboardUI.GetScoreboardPercentages -= GetPaintedCounts;
     }
 }

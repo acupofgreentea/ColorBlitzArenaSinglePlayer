@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -57,6 +56,11 @@ public class ColorBombGridCell : MonoBehaviour
                 yield return null;
             }
         }
+    }
+
+    private void OnDestroy() 
+    {
+        glowEffectCube.transform.DOKill();    
     }
 
     public void Deactivate()

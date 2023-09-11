@@ -14,6 +14,8 @@ public class ColorBombGridPicker : MonoBehaviour
     private float lastPickTime;
 
     private List<GridCell> gridCellsInRange = new();
+
+    private bool canPick = false;
     
     private void Awake() 
     {
@@ -22,8 +24,26 @@ public class ColorBombGridPicker : MonoBehaviour
 
     private void Start() 
     {
-        lastPickTime = Time.time;    
+        SessionManager.OnSessionStart += HandleSessionStart;
+        SessionManager.OnSessionFinish += HandleSessionFinish;
     }
+
+    private void HandleSessionFinish()
+    {
+        canPick = false;
+
+        if(currentColorBombGrid == null)
+            return;
+
+        currentColorBombGrid.ColorBombGridCell.Deactivate();
+    }
+
+    private void HandleSessionStart()
+    {
+        canPick = true;
+        lastPickTime = Time.time;
+    }
+
     private void SetGridsInRange()
     {
         gridCellsInRange = gridManager.GetCellsInRange(currentColorBombGrid.transform, radius);
@@ -31,6 +51,9 @@ public class ColorBombGridPicker : MonoBehaviour
 
     private void Update() 
     {
+        if(!canPick)
+            return;
+        
         if(currentColorBombGrid != null)
             return;
 
@@ -67,5 +90,11 @@ public class ColorBombGridPicker : MonoBehaviour
 
         lastPickTime = Time.time;
         currentColorBombGrid = null;
+    }
+
+    private void OnDestroy() 
+    {
+        SessionManager.OnSessionStart -= HandleSessionStart;
+        SessionManager.OnSessionFinish -= HandleSessionFinish;
     }
 }

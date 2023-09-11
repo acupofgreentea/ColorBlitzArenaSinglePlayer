@@ -2,7 +2,6 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
 using System.Collections;
-using UnityEngine.Lumin;
 
 public class GridCell : MonoBehaviour, IHaveColor
 {

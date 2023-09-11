@@ -10,6 +10,8 @@ public class SessionManager : MonoBehaviour
     public static UnityAction OnSessionFinish;
     public static event UnityAction OnCountdownStart;
 
+    public bool IsSessionActive => !isSessionFinished;
+
     public void StartSession()
     {
         OnSessionStart?.Invoke();
