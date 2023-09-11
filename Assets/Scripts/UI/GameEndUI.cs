@@ -1,13 +1,15 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class GameEndUI : MonoBehaviour
 {
     [SerializeField] private GameObject gameEndPanel;
     [SerializeField] private Button playAgainButton;
     [SerializeField] private Button backtoMenuButton;
+
+    public static event UnityAction OnPlayAgainPressed;
     private void Start() 
     {
         SessionManager.OnSessionFinish += HandleSessionFinish;
@@ -23,7 +25,8 @@ public class GameEndUI : MonoBehaviour
 
     private void HandleRetryButton()
     {
-        SceneManager.LoadScene("GameScene");
+        OnPlayAgainPressed?.Invoke();
+        SceneManagement.Instance.LoadSceneAsync(1);
     }
 
     private void HandleSessionFinish()

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenuUI : MonoBehaviour
 {
     [SerializeField] private Button playButton;
     [SerializeField] private Button exitButton;

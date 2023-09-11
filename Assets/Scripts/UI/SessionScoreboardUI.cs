@@ -13,6 +13,12 @@ public class SessionScoreboardUI : MonoBehaviour
     private void Start()
     {
         SessionManager.OnSessionFinish += HandleSessionFinish;
+        GameEndUI.OnPlayAgainPressed += HandlePlayAgainPressed;
+    }
+
+    private void HandlePlayAgainPressed()
+    {
+        gameObject.SetActive(false);
     }
 
     private void HandleSessionFinish()
@@ -35,5 +41,6 @@ public class SessionScoreboardUI : MonoBehaviour
     private void OnDestroy()
     {
         SessionManager.OnSessionFinish -= HandleSessionFinish;
+        GameEndUI.OnPlayAgainPressed -= HandlePlayAgainPressed;
     }
 }

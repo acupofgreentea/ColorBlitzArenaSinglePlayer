@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class CharacterNameCanvas : MonoBehaviour
+public class CharacterNamesUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text[] texts;
 
@@ -14,7 +14,13 @@ public class CharacterNameCanvas : MonoBehaviour
 
     private void Start() 
     {
-        Managers.Instance.GameManager.OnNamesSet += HandleNamesSet;
+        GameManager.OnNamesSet += HandleNamesSet;
+        SessionManager.OnSessionFinish += HandleSessionFinish;
+    }
+
+    private void HandleSessionFinish()
+    {
+        gameObject.SetActive(false);
     }
 
     private void HandleNamesSet(string[] names)
@@ -37,5 +43,11 @@ public class CharacterNameCanvas : MonoBehaviour
             Vector3 position = cam.WorldToScreenPoint(player.NameTextPosition.position);
             text.transform.position = position;
         }  
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnNamesSet -= HandleNamesSet;        
+        SessionManager.OnSessionFinish -= HandleSessionFinish;
     }
 }

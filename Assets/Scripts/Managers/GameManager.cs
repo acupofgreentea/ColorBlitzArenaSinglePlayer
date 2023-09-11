@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     public int PlayerCount => players.Count;
 
-    public event UnityAction<string[]> OnNamesSet;
+    public static event UnityAction<string[]> OnNamesSet;
 
     public static int PlayerPaintCount = 0;
 
