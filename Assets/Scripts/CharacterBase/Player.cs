@@ -1,4 +1,4 @@
-public class Player : CharacterBase, IPunchable, IPunchUser
+public class Player : CharacterBase
 {
     public new PlayerMovement CharacterMovement => base.CharacterMovement as PlayerMovement;
     public PlayerAnimationEventHandler PlayerAnimationEventHandler {get; private set;}
