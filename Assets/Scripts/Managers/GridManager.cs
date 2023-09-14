@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GridManager : MonoBehaviour 
 {
@@ -19,6 +20,8 @@ public class GridManager : MonoBehaviour
     public GridCell GetRandomGridCell => gridCells.GetRandom();
     private IGridCellPicker gridCellPicker;
 
+    public static event UnityAction<List<(ColorType, int)>> OnUpdatePaintedCounts;
+
     private void Awake() 
     {
         gridCellPicker = GetComponent<IGridCellPicker>().Init(gridCells);    
@@ -27,6 +30,12 @@ public class GridManager : MonoBehaviour
     {
         SetAllGridsColorDataToDefault();
         SessionScoreboardUI.GetScoreboardPercentages += GetPaintedCounts;
+        GridCell.OnGridCellPainted += HandleGridCellPainted;
+    }
+
+    private void HandleGridCellPainted(ColorType colorType)
+    {
+        OnUpdatePaintedCounts?.Invoke(GetPaintedCounts());
     }
 
     public GridCell GetGridCell() => gridCellPicker.GetGridCell();
@@ -76,17 +85,17 @@ public class GridManager : MonoBehaviour
         return values;
     }
 
-    private void OnGUI() 
-    {
-        int percentageOfBlue = GetPercentageOfColor(ColorType.Blue); 
-        int percentageOfRed = GetPercentageOfColor(ColorType.Red);
-        int percentageOfYellow = GetPercentageOfColor(ColorType.Yellow);
-        int percentageOfGreen = GetPercentageOfColor(ColorType.Green); 
-        int percentageOfOncolored = GetPercentageOfColor(ColorType.Uncolored);
+    // private void OnGUI() 
+    // {
+    //     int percentageOfBlue = GetPercentageOfColor(ColorType.Blue); 
+    //     int percentageOfRed = GetPercentageOfColor(ColorType.Red);
+    //     int percentageOfYellow = GetPercentageOfColor(ColorType.Yellow);
+    //     int percentageOfGreen = GetPercentageOfColor(ColorType.Green); 
+    //     int percentageOfOncolored = GetPercentageOfColor(ColorType.Uncolored);
 
-        GUI.Label(new Rect(0, 0, 200, 250), 
-        $"Blue %{percentageOfBlue}\nRed %{percentageOfRed}\nYellow %{percentageOfYellow}\nGreen %{percentageOfGreen}\nUncolored %{percentageOfOncolored}");    
-    }
+    //     GUI.Label(new Rect(0, 0, 200, 250), 
+    //     $"Blue %{percentageOfBlue}\nRed %{percentageOfRed}\nYellow %{percentageOfYellow}\nGreen %{percentageOfGreen}\nUncolored %{percentageOfOncolored}");    
+    // }
 
 
     #if UNITY_EDITOR

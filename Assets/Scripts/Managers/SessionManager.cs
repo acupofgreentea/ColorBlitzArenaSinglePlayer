@@ -10,6 +10,8 @@ public class SessionManager : MonoBehaviour
     public static UnityAction OnSessionFinish;
     public static event UnityAction OnCountdownStart;
 
+    public static event UnityAction<int> OnGameTimeUpdate;
+
     public bool IsSessionActive => !isSessionFinished;
 
     public void StartSession()
@@ -34,13 +36,14 @@ public class SessionManager : MonoBehaviour
             isSessionFinished = true;
         }
         
-        gameTime-= Time.deltaTime;    
+        gameTime -= Time.deltaTime;    
+        OnGameTimeUpdate?.Invoke((int)gameTime);
     }
 
-    private void OnGUI() 
-    {
-        float remaningTime = gameTime;
-        remaningTime = Mathf.RoundToInt(remaningTime);
-        GUI.Label(new Rect(150, 0, 20, 20), remaningTime.ToString());
-    }
+    // private void OnGUI() 
+    // {
+    //     float remaningTime = gameTime;
+    //     remaningTime = Mathf.RoundToInt(remaningTime);
+    //     GUI.Label(new Rect(150, 0, 20, 20), remaningTime.ToString());
+    // }
 }

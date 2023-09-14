@@ -16,6 +16,8 @@ public class GridCell : MonoBehaviour, IHaveColor
     public event UnityAction<CharacterBase> OnTriggered;
     private readonly int colorID = Shader.PropertyToID("_Color");
 
+    public static event UnityAction<ColorType> OnGridCellPainted;
+
     private void Awake() 
     {
         ColorBombGridCell = GetComponent<ColorBombGridCell>();    
@@ -50,7 +52,7 @@ public class GridCell : MonoBehaviour, IHaveColor
         IEnumerator ColorSequence()
         {
             float elapsedTime = 0f;
-            float changeTimer = 0.2f;
+            float changeTimer = 0.15f;
             Color startColor = MaterialPropertyBlock.GetColor(colorID);
             Color targetColor = ColorData.Color;
             
@@ -62,6 +64,8 @@ public class GridCell : MonoBehaviour, IHaveColor
                 _renderer.SetPropertyBlock(MaterialPropertyBlock);
                 yield return null;
             }
+
+            OnGridCellPainted?.Invoke(ColorData.ColorType);
         }
 
         //_renderer.material.DOColor(ColorData.Color, 0.2f);
